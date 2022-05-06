@@ -6,10 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import com.lym.lung_cancer_server.api.CommonResult;
-import com.lym.lung_cancer_server.service.CNVService;
-import com.lym.lung_cancer_server.service.DNAService;
-import com.lym.lung_cancer_server.service.RNAService;
-import com.lym.lung_cancer_server.service.WSIService;
+import com.lym.lung_cancer_server.service.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -48,15 +45,17 @@ public class UploadController {
                 return CommonResult.failed("upload_error");
             }
             try {
+                SQLService ss = new SQLService(datePackage);
                 if (kind.equals("RNA")) {
-                    RNAService rs = new RNAService(fileAddress);
+                    RNAService rs = new RNAService(fileAddress, datePackage);
                 } else if (kind.equals("DNA")) {
-                    DNAService ds = new DNAService(fileAddress);
+                    DNAService ds = new DNAService(fileAddress, datePackage);
                 } else if (kind.equals("WSI")) {
-                    WSIService ws = new WSIService(fileAddress);
+                    WSIService ws = new WSIService(fileAddress, datePackage);
                 } else if (kind.equals("CNV")) {
-                    CNVService cs = new CNVService(fileAddress);
+                    CNVService cs = new CNVService(fileAddress, datePackage);
                 }
+                Diagnosis d = new Diagnosis(datePackage);
             }catch (IOException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {

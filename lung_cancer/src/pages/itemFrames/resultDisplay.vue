@@ -9,35 +9,46 @@
         <el-table-column
             prop="Work_ID"
             label="Work ID"
-            width="200px">
+            width="150px">
         </el-table-column>
         <el-table-column
             prop="Name"
             label="Name"
-            width="180px">
+            width="150px">
         </el-table-column>
         <el-table-column
             prop="Submit_Time"
             label="Submit Time "
-            width="200px">
+            width="150px">
+        </el-table-column>
+        <el-table-column
+            prop="Submit_File"
+            label="Submit_File "
+            width="120px">
+        </el-table-column>
+        <el-table-column
+            prop="Complite_Diagnosis"
+            label="Complite_Diagnosis"
+            width="160px">
         </el-table-column>
         <el-table-column
             prop="Cancer_Subtypes"
             label="Cancer Subtypes"
-            width="200px">
+            width="150px">
         </el-table-column>
         <el-table-column
             prop="Confidence"
             label="Confidence "
-            width="200px">
+            width="150px">
         </el-table-column>
         <el-table-column
             prop="Results"
             label="Results "
-            width="195px">
+            width="140px">
             <template slot-scope="scope">
-                <el-button @click="handleClick(scope.row)" type="text" size="small">Download</el-button>
+              <el-button type="success" href='javascript:void(0)' @click="handleClick(scope.row.Results)" :disabled="check_exist(scope.row.Results)">Download</el-button>
             </template>
+            
         </el-table-column>
     </el-table>
 </template>
@@ -48,57 +59,114 @@ export default {
     return {
       
       //table
-     tableData: [{
-          Work_ID: '1',
-          Name: 'TCGA-2F-A3ED',
-          Submit_Time: '01-20-2022',
-          Cancer_Subtypes: 'LUAD',
-          Confidence: '91.3%',
-          Results: 200333
-        }, {
-          Work_ID: '2',
-          Name: 'TCGA-3E-C3BM',
-          Submit_Time: '01-23-2022 ',
-          Cancer_Subtypes: 'LUAD',
-          Confidence: '95.2%',
-          Results: 200333
-        },{
-          Work_ID: '3',
-          Name: 'TCGA-BB-1F2D',
-          Submit_Time: '01-26-2022',
-          Cancer_Subtypes: 'LUSC',
-          Confidence: '97.1%',
-          Results: 200333
-        },{
-          Work_ID: '4',
-          Name: 'TCGA-AN-COPK',
-          Submit_Time: '02-01-2022',
-          Cancer_Subtypes: 'LUSC',
-          Confidence: '96.4%',
-          Results: 200333
-        },{
-          Work_ID: '5',
-          Name: 'TCGA-FK-UNM9',
-          Submit_Time: '02-11-2022',
-          Cancer_Subtypes: 'LUSC',
-          Confidence: '89.3%',
-          Results: 200333
-        },{
-          Work_ID: '6',
-          Name: 'TCGA-C0-FFKE',
-          Submit_Time: '03-10-2022',
-          Cancer_Subtypes: 'LUAD',
-          Confidence: '98.9%',
-          Results: 200333
-        },{
-          Work_ID: '7',
-          Name: 'TCGA-2F-TTN4',
-          Submit_Time: '03-20-2022',
-          Cancer_Subtypes: 'LUAD',
-          Confidence: '92.6%',
-          Results: 200333
-        },]
+     tableData: [
+      //  {
+      //     Work_ID: '1',
+      //     Name: 'TCGA-2F-A3ED',
+      //     Submit_Time: '01-20-2022',
+      //     Submit_File: 'R D S W',
+      //     Complite_Diagnosis: 'R D S W',
+      //     Cancer_Subtypes: 'LUAD',
+      //     Confidence: '91.3%',
+      //     Results: 200333
+      //   }, 
+        ]
     }     
   },
+
+  created() {//页面被创建时的操作
+    this.getdownloadlist();
+  },
+
+  mounted(){
+    setInterval(() => {
+      this.getdownloadlist();
+    }, 1000 * 5 * 60);
+  },
+  methods:{
+    getdownloadlist(){
+      // console.log(1)
+      this.$store
+            .dispatch("GetDownloadList")
+            .then(response => {
+              this.loading = false;
+              let code = response.data.code;
+              if (code == 200) {
+                this.theMsg(response.data.data)
+              }
+              else if(code==500){
+                aler("500");
+              }
+              else{
+                alert("false");
+              }
+            })
+            .catch(() => {
+              this.loading = false;
+            });
+    },
+
+    check_exist(src){
+      if(src != null){
+        return false;
+      }
+      return true;
+    },
+
+    theMsg(src){
+      var items = [];
+      for(var obj in src){
+        var item = new Object;
+        var sf = "";
+        var cd = "";
+        if(src[obj].s_RNA != null){ sf += "R ";}
+        if(src[obj].s_DNA != null){ sf += "D ";}
+        if(src[obj].s_CNV != null){ sf += "S ";}
+        if(src[obj].s_WSI != null){ sf += "W ";}
+        if(src[obj].rna != null){ cd += "R ";}
+        if(src[obj].dna != null){ cd += "D ";}
+        if(src[obj].cnv != null){ cd += "S ";}
+        if(src[obj].wsi != null){ cd += "W ";}
+        item = {
+          Work_ID: src[obj].id,
+          Name: src[obj].name,
+          Submit_Time: src[obj].submit,
+          Submit_File: sf,
+          Complite_Diagnosis: cd,
+          Cancer_Subtypes: src[obj].result,
+          Confidence: src[obj].confidence,
+          Results: src[obj].download
+        }
+        items.push(item);
+      }
+      this.tableData = items
+    },
+
+    handleClick(src){
+      let filePath = src + ".txt"
+      this.$store
+            .dispatch("GetResult",filePath)
+            .then(data => {
+              if(!data){
+                return
+              }
+              console.log(data.data)
+              let url = window.URL.createObjectURL(data.data)
+              let link = document.createElement('a')
+              link.style.display = 'none'
+              link.href = url
+              // 获取文件名
+              let fileName = filePath
+              // download 属性定义了下载链接的地址而不是跳转路径
+              link.setAttribute('download', fileName)
+              document.body.appendChild(link)
+              link.click()
+            } 
+            )
+            .catch(() => {
+              this.loading = false;
+            });
+    }
+  }
 }
 </script>

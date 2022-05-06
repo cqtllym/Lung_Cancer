@@ -48,8 +48,8 @@
       
     </el-container>
     <!--底下信息介绍 -->
-    <el-footer height="240px">
-      
+    <el-footer height="140px">
+      <!-- <h1>made by 罗艺铭</h1> -->
     </el-footer>
   </el-container>
   </div>
@@ -66,7 +66,7 @@ export default {
         {name:'/',navItem:'LungDIG',iclass:'el-icon-location'}, 
         {name:'/roiFlitering',navItem:'ROI Filtering',iclass:'el-icon-menu'},
         {name:'/resultDisplay',navItem:'Results Display',iclass:'el-icon-document'}, 
-        {name:'/selfCenter',navItem:'Self Center',iclass:'el-icon-setting'}, 
+        // {name:'/selfCenter',navItem:'Self Center',iclass:'el-icon-setting'}, 
       ] 
     } 
   },

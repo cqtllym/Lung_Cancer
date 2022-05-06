@@ -54,24 +54,10 @@ export default {
           label: 'LUAD',
           children: [{
             value: 10000,
-            label: 'TCGA-2F-A3ED'
-          },{
-            value: 10001,
-            label: 'TCGA-3E-C3BM'
+            label: "TCGA-97-7938-01"
           }]
         }
-        ,{
-          value: 22,
-          label: 'LUSC',
-          children: [{
-            value: 10000,
-            label: 'TCGA-BB-1F2D'
-          },{
-            value: 10001,
-            label: 'TCGA-AN-COPK'
-          }]
-        },
-        
+        ,
       ],
     }     
   },
@@ -112,7 +98,7 @@ export default {
               this.loading = false;
               let code = response.data.code;
               if (code == 200) {
-                alert(response.data.data)
+                // alert(response.data.data)
               }
               else if(code==500){
                 aler("500");

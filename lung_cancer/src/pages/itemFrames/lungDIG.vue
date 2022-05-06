@@ -67,7 +67,7 @@ export default {
       RNA:[],
       WSI:[],
       CNV:[],
-      uploadarr:{"RNA":this.RNA , "DNA":this.DNA, "CNV":this.CNV, "WSI":this.WSI},
+      uploadarr:{"RNA":this.RNA , "DNA":this.DNA, "SNV":this.CNV, "WSI":this.WSI},
       choose:"",
     }
   },
@@ -98,7 +98,7 @@ export default {
         this.RNA = fileList
       }else if(this.choose == "WSI"){
         this.WSI = fileList
-      }else if(this.choose == "CNV"){
+      }else if(this.choose == "SNV"){
         this.CNV = fileList
       }
       if(file.status === 'ready'){
@@ -170,10 +170,11 @@ export default {
               this.loading = false;
             });
       }
-      if(this.WSI.length != 0){
+      
+      if(this.CNV.length != 0){
         let fd =new FormData()
-        fd.set("name",s+"&WSI")
-        fd.set("files",this.WSI[0].raw)
+        fd.set("name",s+"&CNV")
+        fd.set("files",this.CNV[0].raw)
         this.$store
             .dispatch("Upload",fd)
             .then(response => {
@@ -193,10 +194,10 @@ export default {
               this.loading = false;
             });
       }
-      if(this.CNV.length != 0){
+      if(this.WSI.length != 0){
         let fd =new FormData()
-        fd.set("name",s+"&CNV")
-        fd.set("files",this.CNV[0].raw)
+        fd.set("name",s+"&WSI")
+        fd.set("files",this.WSI[0].raw)
         this.$store
             .dispatch("Upload",fd)
             .then(response => {
