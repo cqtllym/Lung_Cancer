@@ -17,9 +17,9 @@
         <div style="margin-right:1000px;font-size:20px;font-weight:Blod;color:#77070d;margin-left:20px;width:200px">
           Data Upload
         </div>
-        <div style="width:1100px;height:200px;background-color:white;margin-left:40px;padding-top:10px" class="block">
+        <div style="width:1100px;height:180px;background-color:white;margin-left:40px;padding-top:10px" class="block">
           <el-form>
-            <div style="height:140px;">
+            <div style="height:120px;">
               <el-form-item>
                   <el-row>
                     <el-col :span="6" 
@@ -62,7 +62,7 @@ export default {
   name: "index",
   data () {
     return {
-      imgSrc:"../static/流程图.jpg",
+      imgSrc:"../static/流程图.png",
       DNA:[],
       RNA:[],
       WSI:[],
@@ -124,7 +124,13 @@ export default {
     upload(){//为列表添加信息
     const d = new Date()
     let s = `${d.getFullYear()}${d.getMonth()}${d.getDate()-1}${d.getHours()}${d.getMinutes()}${d.getSeconds()}`
+    var return_list = {
+        kind1:0,
+        kind2:0,
+        dataPackage:s
+      }
       if(this.RNA.length != 0){
+        return_list.kind1 = 1;
         let fd =new FormData()
         fd.set("name",s+"&RNA")
         fd.set("files",this.RNA[0].raw)
@@ -148,6 +154,7 @@ export default {
             });
       }
       if(this.DNA.length != 0){
+        return_list.kind1 = 1;
         let fd =new FormData()
         fd.set("name",s+"&DNA")
         fd.set("files",this.DNA[0].raw)
@@ -172,6 +179,7 @@ export default {
       }
       
       if(this.CNV.length != 0){
+        return_list.kind1 = 1;
         let fd =new FormData()
         fd.set("name",s+"&CNV")
         fd.set("files",this.CNV[0].raw)
@@ -195,6 +203,7 @@ export default {
             });
       }
       if(this.WSI.length != 0){
+        return_list.kind2 = 1;
         let fd =new FormData()
         fd.set("name",s+"&WSI")
         fd.set("files",this.WSI[0].raw)
@@ -217,6 +226,25 @@ export default {
               this.loading = false;
             });
       }
+      
+      this.$store
+            .dispatch("Diagnosis",return_list)
+            .then(response => {
+              this.loading = false;
+              let code = response.data.code;
+              if (code == 200) {
+                console.log(response.data.data)
+              }
+              else if(code==500){
+                aler("500");
+              }
+              else{
+                alert("false");
+              }
+            })
+            .catch(() => {
+              this.loading = false;
+            });
     },
   },
 }

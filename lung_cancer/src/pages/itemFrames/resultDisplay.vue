@@ -19,18 +19,18 @@
         <el-table-column
             prop="Submit_Time"
             label="Submit Time "
-            width="150px">
+            width="180px">
         </el-table-column>
         <el-table-column
             prop="Submit_File"
             label="Submit_File "
             width="120px">
         </el-table-column>
-        <el-table-column
+        <!-- <el-table-column
             prop="Complite_Diagnosis"
             label="Complite_Diagnosis"
             width="160px">
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column
             prop="Cancer_Subtypes"
             label="Cancer Subtypes"
@@ -42,11 +42,11 @@
             width="150px">
         </el-table-column>
         <el-table-column
-            prop="Results"
-            label="Results "
-            width="140px">
+            prop="Interpretable_information"
+            label="Interpretable Information "
+            width="240px">
             <template slot-scope="scope">
-              <el-button type="success" href='javascript:void(0)' @click="handleClick(scope.row.Results)" :disabled="check_exist(scope.row.Results)">Download</el-button>
+              <el-button type="success" href='javascript:void(0)' @click="handleClick(scope.row.Work_ID,scope.row.Name)" :disabled="check_exist(scope.row.Results)">Download</el-button>
             </template>
             
         </el-table-column>
@@ -68,7 +68,8 @@ export default {
       //     Complite_Diagnosis: 'R D S W',
       //     Cancer_Subtypes: 'LUAD',
       //     Confidence: '91.3%',
-      //     Results: 200333
+      //     Results: 200333,
+      //     is_show:false
       //   }, 
         ]
     }     
@@ -112,6 +113,15 @@ export default {
       }
       return true;
     },
+    show_href(src){
+      var temp = src.split()
+      is_show = false;
+      for(i in temp){
+        if(i == "W"){
+          is_show = ture
+        }
+      }
+    },
 
     theMsg(src){
       var items = [];
@@ -119,44 +129,48 @@ export default {
         var item = new Object;
         var sf = "";
         var cd = "";
+        var is_show = false;
         if(src[obj].s_RNA != null){ sf += "R ";}
         if(src[obj].s_DNA != null){ sf += "D ";}
         if(src[obj].s_CNV != null){ sf += "S ";}
-        if(src[obj].s_WSI != null){ sf += "W ";}
+        if(src[obj].s_WSI != null){ 
+          sf += "W ";
+        }
         if(src[obj].rna != null){ cd += "R ";}
         if(src[obj].dna != null){ cd += "D ";}
         if(src[obj].cnv != null){ cd += "S ";}
         if(src[obj].wsi != null){ cd += "W ";}
-        item = {
-          Work_ID: src[obj].id,
-          Name: src[obj].name,
-          Submit_Time: src[obj].submit,
-          Submit_File: sf,
-          Complite_Diagnosis: cd,
-          Cancer_Subtypes: src[obj].result,
-          Confidence: src[obj].confidence,
-          Results: src[obj].download
+        if(sf == cd){
+          item = {
+            Work_ID: src[obj].id,
+            Name: src[obj].name,
+            Submit_Time: src[obj].submit,
+            Submit_File: sf,
+            Complite_Diagnosis: cd,
+            Cancer_Subtypes: src[obj].result,
+            Confidence: src[obj].confidence,
+            Results: src[obj].download,
+          }
+          items.push(item);
         }
-        items.push(item);
       }
       this.tableData = items
     },
 
-    handleClick(src){
-      let filePath = src + ".txt"
+    handleClick(src,src2){
+      let filePath = src + ".xlsx"
       this.$store
             .dispatch("GetResult",filePath)
             .then(data => {
               if(!data){
                 return
               }
-              console.log(data.data)
               let url = window.URL.createObjectURL(data.data)
               let link = document.createElement('a')
               link.style.display = 'none'
               link.href = url
               // 获取文件名
-              let fileName = filePath
+              let fileName = src2 + ".xlsx"
               // download 属性定义了下载链接的地址而不是跳转路径
               link.setAttribute('download', fileName)
               document.body.appendChild(link)

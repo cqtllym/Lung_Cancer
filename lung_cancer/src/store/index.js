@@ -5,6 +5,8 @@ import thelist from './modules/thelist'
 import theUpload from './modules/theUpload'
 import theresult from './modules/theresult'
 import theDownloadList from "./modules/theDownloadList"
+import theDiagnosis from "./modules/theDiagnosis"
+import theDynamic from "./modules/theDynamic"
 
 Vue.use(Vuex)
 import {state,getters,mutations} from "./mutations"
@@ -21,7 +23,9 @@ export default new Vuex.Store({
         thelist,
         theUpload,
         theresult,
-        theDownloadList
+        theDownloadList,
+        theDiagnosis,
+        theDynamic
     }
 })
 

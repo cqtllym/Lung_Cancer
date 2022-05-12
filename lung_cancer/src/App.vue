@@ -66,7 +66,7 @@ export default {
         {name:'/',navItem:'LungDIG',iclass:'el-icon-location'}, 
         {name:'/roiFlitering',navItem:'ROI Filtering',iclass:'el-icon-menu'},
         {name:'/resultDisplay',navItem:'Results Display',iclass:'el-icon-document'}, 
-        // {name:'/selfCenter',navItem:'Self Center',iclass:'el-icon-setting'}, 
+        {name:'/dynamic_loading',navItem:'Dynamic loading',iclass:'el-icon-setting'}, 
       ] 
     } 
   },

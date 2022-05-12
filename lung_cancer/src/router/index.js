@@ -8,7 +8,7 @@ export const constantRouterMap = [
     { path: '/', component: () => import('@/pages/itemFrames/lungDIG')},
     { path: '/resultDisplay', component: () => import('@/pages/itemFrames/resultDisplay')},
     { path: '/roiFlitering', component: () => import('@/pages/itemFrames/roiFlitering')},
-    // { path: '/selfCenter', component: () => import('@/pages/itemFrames/selfCenter')},
+    { path: '/dynamic_loading', component: () => import('@/pages/itemFrames/dynamic_loading')},
     
     
 ]
